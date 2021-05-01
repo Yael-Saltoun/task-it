@@ -1,0 +1,25 @@
+:host {
+  display: block;
+  margin-top: 1rem;
+}
+
+.info-text{
+  text-align: center;
+}
+
+mat-spinner {
+  margin: auto;
+}
+
+.task-image {
+ width:100%;
+}
+
+.task-image img {
+  width:40%;
+  box-shadow: 1px 1px 5px rgba(59, 59, 59, 0);
+ }
+ .mat-paginator {
+   margin-top: 1rem;
+ }
+
