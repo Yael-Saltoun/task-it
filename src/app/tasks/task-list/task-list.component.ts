@@ -2,8 +2,10 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { PageEvent } from "@angular/material/paginator";
 import { Subscription } from 'rxjs';
 
+
 import { Task } from '../task.model';
 import { TasksService } from '../tasks.service';
+import { AuthService } from "src/app/auth/auth.service";
 
 @Component({
   selector: 'app-task-list',
@@ -22,18 +24,26 @@ export class TaskListComponent implements OnInit, OnDestroy {
   tasksPerPage = 2;
   currentPage = 1;
   pageSizeOptions = [1, 2, 5, 10];
+  userIsAuthenticated = false;
   private tasksSub: Subscription;
+  private authStatusSub: Subscription;
 
-  constructor(public tasksService: TasksService) { }
+  constructor(public tasksService: TasksService, private authService: AuthService) { }
 
   ngOnInit() {
     this.isLoading = true;
     this.tasksService.getTasks(this.tasksPerPage, this.currentPage);
-    this.tasksSub = this.tasksService.getTaskUpdateListener()
+    this.tasksSub = this.tasksService
+      .getTaskUpdateListener()
       .subscribe((taskData: {tasks: Task[], taskCount: number}) => {
         this.isLoading = false;
         this.totalTasks = taskData.taskCount;
         this.tasks = taskData.tasks;
+      });
+      this.userIsAuthenticated = this.authService.getIsAuth();
+      this.authStatusSub = this.authService.getAuthStatusListener().subscribe(isAuthenticated => {
+      this.userIsAuthenticated = isAuthenticated;
+
       });
   }
   onDelete(taskId: string) {
@@ -45,6 +55,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy() {
     this.tasksSub.unsubscribe();
+    this.authStatusSub.unsubscribe();
   }
 
   onChangedPage(pageData: PageEvent) {

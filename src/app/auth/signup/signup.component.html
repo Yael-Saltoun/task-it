@@ -28,7 +28,8 @@
     </mat-form-field>
     <button mat-raised-button
       color="accent"
-      type="submit">Signup</button>
+      type="submit"
+      *ngIf="!isLoading">Signup</button>
   </form>
 </mat-card>
 
