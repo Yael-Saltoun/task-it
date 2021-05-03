@@ -24,7 +24,8 @@ export class TasksService {
           title: task.title,
           content: task.content,
           id: task._id,
-          imagePath: task.imagePath
+          imagePath: task.imagePath,
+          creator: task.creator
         };
        }), maxTasks: taskData.maxTasks
       };
@@ -44,9 +45,13 @@ export class TasksService {
   }
 
   getTask(id: string){
-    return this.http.get<{_id: string, title: string, content: string, imagePath: string}>(
-      "http://localhost:3000/api/tasks/" + id
-      );
+    return this.http.get<{
+      _id: string,
+      title: string,
+      content: string,
+      imagePath: string,
+      creator: string
+    }>("http://localhost:3000/api/tasks/" + id);
   }
   addTask(title: string, content: string, image: File){
     const taskData = new FormData();
@@ -78,7 +83,8 @@ export class TasksService {
         id: id,
         title: title,
         content: content,
-        imagePath: image
+        imagePath: image,
+        creator: null
       };
     }
 

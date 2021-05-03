@@ -9,7 +9,7 @@
     </div>
     <p> {{ task.content}}</p>
 
-    <mat-action-row *ngIf="userIsAuthenticated">
+    <mat-action-row *ngIf="userIsAuthenticated && userId === task.creator">
       <a mat-button color="primary" [routerLink]="['/edit', task.id]">EDIT</a>
       <button mat-button color="warn" (click)="onDelete(task.id)" >DELETE</button>
     </mat-action-row>

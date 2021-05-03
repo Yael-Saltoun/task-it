@@ -50,7 +50,8 @@ export class TaskCreateComponent implements OnInit {
             id: taskData._id,
             title: taskData.title,
             content: taskData.content,
-            imagePath: taskData.imagePath
+            imagePath: taskData.imagePath,
+            creator: taskData.creator
           };
           this.form.setValue({
             'title': this.task.title,
