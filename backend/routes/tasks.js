@@ -2,7 +2,7 @@ const express = require("express");
 const multer = require("multer");
 
 const Task = require('../models/task');
-const checkAuth = require("../middleware/check-auth")
+const checkAuth = require("../middleware/check-auth");
 
 const router = express.Router();
 
@@ -27,7 +27,7 @@ const storage = multer.diskStorage({
     const ext = MIME_TYPE_MAP[file.mimetype];
     cb(null, name + '-' + Date.now() + '.' + ext);
   }
-})
+});
 
 router.post("",
 checkAuth,
@@ -44,15 +44,16 @@ checkAuth,
     res.status(201).json({
       message: 'Task Added Succesfully',
       task: {
+        ...createdTask,
         id: createdTask._id,
-        title: createdTask.title,
-        content: createdTask.content,
-        imagePath: createdTask.imagePath,
+        // title: createdTask.title,
+        // content: createdTask.content,
+        // imagePath: createdTask.imagePath,
       }
     });
   }).catch( error => {
     res.status(500).json({
-      message: "Creating a task failed!" ;
+      message: "Creating a task failed!"
     });
   });
 });
@@ -116,31 +117,34 @@ router.get("", (req, res, next) =>{
  });
 
 
-router.get('/:id', (req, res, next) =>{
+router.get('/:id', (req, res, next) => {
   Task.findById(req.params.id).then( task => {
     if (task) {
            res.status(200).json(task);
     } else {
       res.status(404).json({message: 'Task not found'});
     }
-  }) .catch( error => {
+  })
+  .catch( error => {
     res.status(500).json({
       message: "Fetching tasks failed!"
     });
+  });
 });
 
 router.delete('/:id', checkAuth, (req, res, next) =>{
   Task.deleteOne({_id: req.params.id, creator:req.userData.userId}).then(result => {
     if (result.n > 0) {
-      console.log()
+      console.log(result);
       res.status(200).json({message:"Deletion successful"});
     } else {
       res.status(401).json({message:"Not  authorized!"});
     }
-  }) .catch( error => {
+  }).catch( error => {
     res.status(500).json({
       message: "Fetching tasks failed!"
     });
+});
 });
 
 module.exports = router;
