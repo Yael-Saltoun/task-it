@@ -48,8 +48,11 @@ checkAuth,
         title: createdTask.title,
         content: createdTask.content,
         imagePath: createdTask.imagePath,
-
       }
+    });
+  }).catch( error => {
+    res.status(500).json({
+      message: "Creating a task failed!" ;
     });
   });
 });
@@ -75,8 +78,13 @@ router.put(
     if (result.nModified > 0) {
       res.status(200).json({message:"Update successful"});
     } else{
-      res.status(401).json({message:"Not  authorized!"});
+      res.status(401).json({message:"Not authorized!"});
     }
+  })
+  .catch(error => {
+    res.status(500).json({
+      message: "Couldn't update task!"
+    })
   });
 });
 
@@ -100,6 +108,11 @@ router.get("", (req, res, next) =>{
       maxTasks: count
     });
   })
+  .catch( error => {
+    res.status(500).json({
+      message: "Fetching tasks failed!"
+    });
+  })
  });
 
 
@@ -110,7 +123,10 @@ router.get('/:id', (req, res, next) =>{
     } else {
       res.status(404).json({message: 'Task not found'});
     }
-  });
+  }) .catch( error => {
+    res.status(500).json({
+      message: "Fetching tasks failed!"
+    });
 });
 
 router.delete('/:id', checkAuth, (req, res, next) =>{
@@ -121,7 +137,10 @@ router.delete('/:id', checkAuth, (req, res, next) =>{
     } else {
       res.status(401).json({message:"Not  authorized!"});
     }
-  });
+  }) .catch( error => {
+    res.status(500).json({
+      message: "Fetching tasks failed!"
+    });
 });
 
 module.exports = router;

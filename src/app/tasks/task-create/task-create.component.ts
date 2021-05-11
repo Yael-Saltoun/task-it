@@ -1,6 +1,8 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, ParamMap } from "@angular/router";
+import { Subscription } from "rxjs";
+import { AuthService } from "src/app/auth/auth.service";
 
 import { Task } from "../task.model";
 import { TasksService } from "../tasks.service";
@@ -11,7 +13,7 @@ import { mimeType } from "./mime-type.validator";
   templateUrl: './task-create.component.html',
   styleUrls: ['./task-create.component.css']
 })
-export class TaskCreateComponent implements OnInit {
+export class TaskCreateComponent implements OnInit, OnDestroy {
   enteredTitle = '';
   enteredContent = '';
   task: Task;
@@ -20,14 +22,22 @@ export class TaskCreateComponent implements OnInit {
   imagePreview: string;
   private mode = 'create';
   private taskId: string;
+  private authStatusSub: Subscription ;
 
 
   constructor(
     public tasksService: TasksService,
-    public route: ActivatedRoute
+    public route: ActivatedRoute,
+    private authService: AuthService
     ) {}
 
+
   ngOnInit() {
+    this.authStatusSub = this.authService.getAuthStatusListener().subscribe(
+      authStatus => {
+        this.isLoading = false;
+      }
+    );
     console.log(this.mode);
     this.form = new FormGroup({
       'title': new FormControl(null, {
@@ -98,6 +108,10 @@ onImagePicked(event: Event) {
         );
     };
     this.form.reset();
+  }
+
+  ngOnDestroy() {
+   this.authStatusSub.unsubscribe();
   }
 }
 
